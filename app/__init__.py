@@ -5,8 +5,7 @@
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-<<<<<<< HEAD
-from config.config import Config, configs
+from config.config import configs
 from redis import StrictRedis
 from app.utils.setup_log import setup_log
 
@@ -27,11 +26,4 @@ def create_app(config_name):
     redis_store = StrictRedis(host=config.REDIS_HOST, port=config.REDIS_PORT, decode_responses=True)
 
     return app
-=======
-
-
-
-def create_app(config_name):
-    pass
->>>>>>> 4d0be0f063837d15038508002a8608d5711dbd8c
 
