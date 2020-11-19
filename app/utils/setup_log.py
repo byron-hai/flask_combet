@@ -2,6 +2,7 @@
 # @File: setup_log.py
 # @Author: byron
 # @Date: 11/19/20
+<<<<<<< HEAD
 import logging
 from logging.handlers import RotatingFileHandler
 from config.config import configs
@@ -15,3 +16,5 @@ def setup_log(config_name):
     log_file_handler.setFormatter(formatter)
     logging.getLogger().addHandler(log_file_handler)
 
+=======
+>>>>>>> 4d0be0f063837d15038508002a8608d5711dbd8c
