@@ -22,8 +22,13 @@ def create_app(config_name):
     app.config.from_object(config)
     db.init_app(app)
 
+    # init redis_store
     global redis_store
     redis_store = StrictRedis(host=config.REDIS_HOST, port=config.REDIS_PORT, decode_responses=True)
+
+    # Register blueprint: auth_bp
+    from app.modules.auth import auth_bp
+    app.register_blueprint(auth_bp)
 
     return app
 

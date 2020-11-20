@@ -13,6 +13,14 @@ class BaseModel:
     create_time = db.Column(db.DateTime, default=datetime.now)
     update_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
+    @staticmethod
+    def session_commit():
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return str(e)
+
 
 class UserInfo(BaseModel, db.Model):
     __tablename__ = "users"
@@ -25,6 +33,20 @@ class UserInfo(BaseModel, db.Model):
     birth_date = db.Column(db.Date)
     role_id = db.Column(db.Integer)
 
+    def __init__(self, mobile, nickname):
+        self.mobile = mobile
+        self.nickname = nickname
+
+    def add(self, user):
+        db.session.add(user)
+        self.session_commit()
+
+    def update(self):
+        self.session_commit()
+
+    def __repr__(self):
+        return '<UserInfo: %r>' % self.nickname
+
 
 class LoginUser(BaseModel, db.Model):
     __tablename__ = "users_login"
@@ -33,7 +55,6 @@ class LoginUser(BaseModel, db.Model):
     password_hash = db.Column(db.String(128), nullable=False)
     user_id = db.Column(db.Integer)
     last_login = db.Column(db.DateTime, default=datetime.now)
-
 
     @property
     def password(self):
@@ -46,3 +67,12 @@ class LoginUser(BaseModel, db.Model):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    def add(self, user):
+        db.session.add(user)
+        self.session_commit()
+
+    def update(self):
+        self.session_commit()
+
+    def __repr__(self):
+        return '<UserInfo: %r>' % self.mobile

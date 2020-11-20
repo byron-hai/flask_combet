@@ -7,7 +7,7 @@ import logging
 
 class Config:
     DEBUG = False
-    SECRET_KEY = "TODO string"
+    SECRET_KEY = "\xc6\xb4\xa2f\xd0\xcb#\xe1\xf0j(\t\xef\xc2\xb7/\x85\xd9\xcdaK\xc6yG\xed\x05\x0b\xc7&\x0bO\x17"
     # Mysql database configure
     DIALECT = "mysql"
     DRIVER = "pymysql"
