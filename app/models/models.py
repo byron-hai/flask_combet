@@ -44,6 +44,15 @@ class UserInfo(BaseModel, db.Model):
     def update(self):
         self.session_commit()
 
+    def to_dict(self):
+        return {'id': self.id,
+                'nickname': self.nickname,
+                'mobile': self.mobile,
+                'avatar_url': self.avatar_url,
+                'signature': self.signature,
+                'sex': self.sex,
+                'birth_date': self.birth_date}
+
     def __repr__(self):
         return '<UserInfo: %r>' % self.nickname
 
@@ -73,6 +82,11 @@ class LoginUser(BaseModel, db.Model):
 
     def update(self):
         self.session_commit()
+
+    def to_dict(self):
+        return {'mobile': self.mobile,
+                'user_id': self.user_id,
+                'last_login': self.last_login}
 
     def __repr__(self):
         return '<UserInfo: %r>' % self.mobile
