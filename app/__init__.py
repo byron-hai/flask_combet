@@ -34,4 +34,9 @@ def create_app(config_name):
     from app.modules.auth import auth_bp
     app.register_blueprint(auth_bp)
 
+    # Register blueprint: profile_bp
+    from app.modules.profile import profile_bp
+    app.register_blueprint(profile_bp)
+
     return app
+

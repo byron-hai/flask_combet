@@ -38,6 +38,11 @@ class Config:
     # Login authentication
     AUTH_TYPE = "token"  # Options: session, token
 
+    # image storage keys
+    QINIU_ACCESS_KEY = 'IGwLUvXx5BKXjW9pZwpyQVTvuDMIpxibqjCezh0q'
+    QINIU_SECRET_KEY = '9Ttq77KTl-9DHUWMxRIxG_TjBeIBMQU6YtTa8i58'
+    QiNIU_BUCKET = 'user-avatar'
+
 
 class DevelopConfig(Config):
     DEBUG = True
