@@ -24,5 +24,3 @@ def success(msg, data=None):
 
 def error(code, msg, data=None):
     return resp_result(code=code, msg=msg, data=data)
-
-

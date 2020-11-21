@@ -11,3 +11,6 @@ REQUEST_COUNT_REDIS_EXPIRES = 5
 
 # image code expire time
 IMAGE_CODE_EXPIRE_TIME = 60
+
+# session lifetime
+PERMANENT_SESSION_LIFETIME = 24 * 60 * 60

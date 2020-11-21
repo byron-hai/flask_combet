@@ -3,6 +3,7 @@
 # @Author: byron
 # @Date: 11/19/20
 import logging
+from redis import StrictRedis
 
 
 class Config:
@@ -24,6 +25,11 @@ class Config:
     # Redis database configure
     REDIS_HOST = "127.0.0.1"
     REDIS_PORT = "6379"
+
+    # config session
+    SESSION_TYPE = "redis"
+    SESSION_USE_SINGER = True
+    SESSION_REDIS = StrictRedis(host=REDIS_HOST, port=REDIS_PORT)
 
     # logging config
     LOG_LEVEL = logging.INFO

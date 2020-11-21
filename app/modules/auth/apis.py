@@ -9,6 +9,7 @@ from app.models.models import LoginUser, UserInfo
 from app.utils.response_utils import HttpCode, success, error
 from app.utils.img_captcha import generate_captcha, captcha_verify
 from app.utils import constants
+from app.utils.auth_helper import Auth
 from app import redis_store
 from datetime import datetime
 
@@ -52,15 +53,16 @@ class LoginApi(Resource):
         if not user_login.check_password(password):
             return error(HttpCode.params_error, msg="Password error")
 
-        session['user_id'] = user_login.user_id
-        session['mobile'] = user_login.mobile
-
         user_login.last_login = datetime.now()
         err = user_login.update()
         if err:
             current_app.logger.error(err)
 
-        return success("Login success")
+        # session['user_id'] = user_login.user_id
+        # session['mobile'] = user_login.mobile
+        # return success("Login success")
+        token_data = Auth().generate_token(user_login.user_id)
+        return success("login success", data=token_data)
 
 
 class RegisterApi(Resource):
