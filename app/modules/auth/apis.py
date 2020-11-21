@@ -12,6 +12,7 @@ from app.utils import constants
 from app.utils.auth_helper import Auth
 from app import redis_store
 from datetime import datetime
+from config.config import Config
 
 
 def parse_args():
@@ -58,11 +59,13 @@ class LoginApi(Resource):
         if err:
             current_app.logger.error(err)
 
-        # session['user_id'] = user_login.user_id
-        # session['mobile'] = user_login.mobile
-        # return success("Login success")
-        token_data = Auth().generate_token(user_login.user_id)
-        return success("login success", data=token_data)
+        if Config.AUTH_TYPE == 'session':
+            session['user_id'] = user_login.user_id
+            session['mobile'] = user_login.mobile
+            return success("Login success")
+        else:
+            token_data = Auth().generate_token(user_login.user_id)
+            return success("login success", data=token_data)
 
 
 class RegisterApi(Resource):

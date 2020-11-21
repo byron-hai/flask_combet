@@ -8,35 +8,30 @@ from flask import session, g, current_app, request
 from app.utils.auth_helper import Auth
 from app.utils.response_utils import error, HttpCode
 from app.models.models import UserInfo
+from config.config import Config
 
 
 # login check by Session
-def login_session_verify(func):
+def login_identify(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
-        user_id = session.get("user_id")
-        user = None
+        if Config.AUTH_TYPE == "session":
+            user_id = session.get("user_id")
+        # For else, use token authentication
+        else:
+            rtn = Auth().identify_token(request)
+            if rtn['code'] != 200:
+                return error(HttpCode.auth_error, "Authentication failed")
+            user_id = rtn['data'].get('user_id')
 
         if user_id:
             try:
                 user = UserInfo.query.get(user_id)
             except Exception as e:
                 current_app.logger.error(e)
-        g.user = user
-        return func(*args, **kwargs)
-    return wrapper
+                return error(HttpCode.db_error, "Get user info failed")
 
-
-# login check by token
-def login_auth_identify(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        rtn = Auth().identify_token(request)
-        if rtn['code'] == 200:
-            user_id = rtn.get('user_id')
-            g.user = UserInfo.query.get(user_id)
-
+            g.user = user
             return func(*args, **kwargs)
-        else:
-            return error(HttpCode.auth_error, "Authentication failed")
+        return error(HttpCode.auth_error, "Authentication failed")
     return wrapper

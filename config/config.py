@@ -35,6 +35,9 @@ class Config:
     LOG_LEVEL = logging.INFO
     LOG_DIR = "logs/log"
 
+    # Login authentication
+    AUTH_TYPE = "token"  # Options: session, token
+
 
 class DevelopConfig(Config):
     DEBUG = True

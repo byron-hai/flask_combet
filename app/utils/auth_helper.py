@@ -3,13 +3,12 @@
 # @Author: byron
 # @Date: 11/20/20
 
-import time
 import datetime
 import time
 import jwt
 from config.config import Config
 from app.models.models import UserInfo
-from app.utils.response_utils import HttpCode, error, success
+from app.utils.response_utils import HttpCode
 
 
 class Auth:
