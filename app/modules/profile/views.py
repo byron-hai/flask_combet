@@ -11,8 +11,9 @@ from app.models.models import LoginUser
 from app.utils.constants import QINIU_DOMIN_PREFIX
 from app.libs import image_storage
 
-@login_identify
+
 @profile_bp.route('/user')
+@login_identify
 def user():
     if not g.user:
         return error(HttpCode.auth_error, "User not logged in")
@@ -21,8 +22,8 @@ def user():
     return success("success", data=user.to_dict())
 
 
-@login_identify
 @profile_bp.route('/nickname', methods=['POST'])
+@login_identify
 def nickname():
     if not g.user:
         return error(HttpCode.auth_error, "User not logged in")
@@ -36,14 +37,14 @@ def nickname():
     return success("success", data={'nickname': nickname})
 
 
-@login_identify
 @profile_bp.route('/mobile', methods=['POST'])
+@login_identify
 def mobile():
     pass
 
 
-@login_identify
 @profile_bp.route('/birth_date', methods=['POST'])
+@login_identify
 def birth_date():
     if not g.user:
         return error(HttpCode.auth_error, "User not logged in")
@@ -57,8 +58,8 @@ def birth_date():
     return success("success", data={'birth_date': birth_date})
 
 
-@login_identify
 @profile_bp.route('/password', methods=['POST'])
+@login_identify
 def set_password():
     if not g.user:
         return error(HttpCode.auth_error, "User not logged in")
@@ -75,9 +76,9 @@ def set_password():
     return success("success")
 
 
-@login_identify
 @profile_bp.route('/avatar', methods=['POST'])
-def upload_avator():
+@login_identify
+def upload_avatar():
     avatar_file = request.files.get('avatar')
     try:
         img_data = avatar_file.read()
@@ -92,11 +93,11 @@ def upload_avator():
     if err:
         return error(HttpCode.db_error, "Update user avatar_url failed")
 
-    return success('upload success', data={'avata_url': avatar_url})
+    return success('upload success', data={'avatar_url': avatar_url})
 
 
-@login_identify
 @profile_bp.route('/signature', methods=['POST'])
+@login_identify
 def signature():
     if not g.user:
         return error(HttpCode.auth_error, "User not logged in")
@@ -110,8 +111,8 @@ def signature():
     return success("success", data={'signature': signature})
 
 
-@login_identify
 @profile_bp.route('/sex', methods=['POST'])
+@login_identify
 def sex():
     if not g.user:
         return error(HttpCode.auth_error, "User not logged in")
