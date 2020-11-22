@@ -28,8 +28,8 @@ class Config:
 
     # config session
     SESSION_TYPE = "redis"
-    SESSION_USE_SINGER = True
-    SESSION_REDIS = StrictRedis(host=REDIS_HOST, port=REDIS_PORT)
+    SESSION_USE_SINGER = True  # make cookie_id encrypted and signed
+    SESSION_REDIS = StrictRedis(host=REDIS_HOST, port=REDIS_PORT)  # Instance a redis session
 
     # logging config
     LOG_LEVEL = logging.INFO
@@ -39,9 +39,9 @@ class Config:
     AUTH_TYPE = "token"  # Options: session, token
 
     # image storage keys
-    QINIU_ACCESS_KEY = 'IGwLUvXx5BKXjW9pZwpyQVTvuDMIpxibqjCezh0q'
-    QINIU_SECRET_KEY = '9Ttq77KTl-9DHUWMxRIxG_TjBeIBMQU6YtTa8i58'
-    QiNIU_BUCKET = 'user-avatar'
+    QINIU_ACCESS_KEY = '7DtupNyj7TaqXzVU0TIxlLVkV6***uQeWoqkCfPV'
+    QINIU_SECRET_KEY = 'Cew1X0fTSRQaIkBUHqSRxxvqVI598DgkeJ6*****'
+    QINIU_BUCKET = 'byron-bucket'
 
 
 class DevelopConfig(Config):

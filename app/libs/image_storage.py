@@ -11,7 +11,7 @@ access_key = Config.QINIU_ACCESS_KEY
 secret_key = Config.QINIU_SECRET_KEY
 
 q = Auth(access_key, secret_key)
-bucket_name = Config.QiNIU_BUCKET
+bucket_name = Config.QINIU_BUCKET
 
 
 def image_storage(image_data):
@@ -24,7 +24,4 @@ def image_storage(image_data):
         return ret.get("key")
     else:
         return ""
-
-
-
 

@@ -27,7 +27,7 @@ def create_app(config_name):
     global redis_store
     redis_store = StrictRedis(host=config.REDIS_HOST, port=config.REDIS_PORT, decode_responses=True)
 
-    # init flask session
+    # init flask server session
     Session(app)
 
     # Register blueprint: auth_bp

@@ -38,7 +38,7 @@ def generate_captcha(text_length=4, img_type="JPEG"):
 def captcha_verify(img_code_id, img_code):
     redis_img_code = None
     try:
-        redis_img_code = redis_store.get("image_code:%s" % img_code_id)
+        redis_img_code = redis_store.get("img_code:%s" % img_code_id)
     except Exception as e:
         current_app.logger.error(e)
 

@@ -10,4 +10,4 @@ IMAGE_CODE_EXPIRE_TIME = 60
 PERMANENT_SESSION_LIFETIME = 24 * 60 * 60
 
 # avatar storage
-QINIU_DOMIN_PREFIX = "http://qipjg3ur6.hb-bkt.clouddn.com/"
+QINIU_DOMIN_PREFIX = "http://qjriry5qo.hn-bkt.clouddn.com/"
