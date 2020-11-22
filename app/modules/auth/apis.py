@@ -18,16 +18,16 @@ from config.config import Config
 def parse_args():
     # bundle_errors: pring multi-errors
     parser = reqparse.RequestParser(bundle_errors=True)
-    parser.add_argument("mobile", dest="mobile", type=inputs.regex('1[356789]\d+{9}$'), required=True,
+    parser.add_argument("mobile", type=inputs.regex(r"1[356789]\d{9}$"), required=True,
                         location=['json'], help="Mobile not correct")
 
-    parser.add_argument("password", dest='passwd', type=str, required=True,
+    parser.add_argument("password", type=str, required=True,
                         location=['json'], help="Password not correct")
 
-    parser.add_argument("img_code", dest='img_code', type=str, required=True,
+    parser.add_argument("img_code", type=str, required=True,
                         location=['json'], help="Image code not correct")
 
-    parser.add_argument("img_code_id", dest='img_code_id', type=str, required=True,
+    parser.add_argument("img_code_id", type=str, required=True,
                         location=['json'], help="image code id not provided")
 
     args = parser.parse_args()
@@ -44,8 +44,17 @@ class LoginApi(Resource):
         """
 
         args = parse_args()
-        mobile = args.mobile
-        password = args.passwd
+        mobile = args.get('mobile')
+        password = args.get('password')
+        img_code = args.get('img_code')
+        img_code_id = args.get('img_code_id')
+
+        if not all([mobile, password, img_code, img_code_id]):
+            return error(code=HttpCode.params_error, msg="params not all filled")
+
+        rtn_code, msg = captcha_verify(img_code_id, img_code)
+        if rtn_code != 0:
+            return error(HttpCode.params_error, msg=msg)
 
         user_login = LoginUser.query.filter_by(mobile=mobile).first()
         if not user_login:
@@ -58,24 +67,26 @@ class LoginApi(Resource):
         err = user_login.update()
         if err:
             current_app.logger.error(err)
+            return error(HttpCode.db_error, "Store login user info failed")
 
+        user_login = LoginUser.query.filter_by(mobile=mobile).first()
         if Config.AUTH_TYPE == 'session':
             session['user_id'] = user_login.user_id
             session['mobile'] = user_login.mobile
             return success("Login success")
         else:
-            token_data = Auth().generate_token(user_login.user_id)
-            return success("login success", data=token_data)
+            token_data = Auth().generate_token(user_login.user_id, user_login.last_login)
+            return success("login success", data={'token':token_data})
 
 
 class RegisterApi(Resource):
     @staticmethod
     def post():
         args = parse_args()
-        mobile = args.mobile
-        password = args.passwd
-        img_code = args.img_code
-        img_code_id = args.img_code_id
+        mobile = args.get('mobile')
+        password = args.get('password')
+        img_code = args.get('img_code')
+        img_code_id = args.get('img_code_id')
 
         if not all([mobile, password, img_code, img_code_id]):
             return error(code=HttpCode.params_error, msg="params not all filled")
@@ -112,10 +123,13 @@ class ImgVerifyApi(Resource):
         4) return image to front
         :return:
         """
-        cur_id = request.args.get('cur_id')
-        pre_id = request.args.get('pre_id')
+        #cur_id = request.args.get('cur_id')
+        #pre_id = request.args.get('pre_id')
+        cur_id = request.json.get('cur_id')
+        pre_id = request.json.get('pre_id')
 
         text, img_name, img_data = generate_captcha()
+        print(f"***** {text} *****")
 
         try:
             redis_store.set("img_code:%s" % cur_id, text, constants.IMAGE_CODE_EXPIRE_TIME)
