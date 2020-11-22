@@ -21,7 +21,7 @@ def login_identify(func):
         else:
             rtn = Auth().identify_token(request)
             if rtn['code'] != 200:
-                return error(HttpCode.auth_error, "Authentication failed")
+                return error(HttpCode.auth_error, "User not logged in")
             user_id = rtn['data'].get('user_id')
 
         if user_id:
@@ -33,5 +33,6 @@ def login_identify(func):
 
             g.user = user
             return func(*args, **kwargs)
-        return error(HttpCode.auth_error, "Authentication failed")
+        return error(HttpCode.auth_error, "User not logged in")
     return wrapper
+

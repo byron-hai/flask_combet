@@ -7,7 +7,7 @@ import datetime
 import time
 import jwt
 from config.config import Config
-from app.models.models import UserInfo
+from app.models.models import LoginUser
 from app.utils.response_utils import HttpCode
 
 
@@ -25,7 +25,7 @@ class Auth:
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1),
                 'iat': datetime.datetime.utcnow(),
                 'data': {
-                    'id': user_id,
+                    'user_id': user_id,
                     'login_time': login_time
                 }
             }
@@ -46,7 +46,7 @@ class Auth:
         try:
             payload = jwt.decode(auth_token, Config.SECRET_KEY,
                                  leeway=datetime.timedelta(days=1))
-            if 'data' in payload and 'id' in payload['data']:
+            if 'data' in payload and 'user_id' in payload['data']:
                 return payload
             else:
                 raise jwt.InvalidTokenError
@@ -55,14 +55,15 @@ class Auth:
         except jwt.InvalidTokenError:
             return "Invalid token"
 
-    def generate_token(self, user_id):
+    def generate_token(self, user_id, login_time):
         """
         login success, return token; login failed, return failure
-        :param user_id:
+        :param user_id: int
+        :param login_time: datetime
         :return:
         """
-        login_time = int(time.time())
-        token = self._encode_auth_token(user_id, login_time)
+        login_time_stamp = int(time.mktime(login_time.timetuple()))
+        token = self._encode_auth_token(user_id, login_time_stamp)
         return str(token, encoding='utf-8')
 
     def identify_token(self, request):
@@ -79,14 +80,16 @@ class Auth:
                 auth_token = auth_token_arr[1]
                 payload = self._decode_auth_token(auth_token)
                 if not isinstance(payload, str):
-                    user_id = payload.get('data').get('id')
+                    user_id = payload.get('data').get('user_id')
                     login_time = payload.get('data').get('login_time')
-                    user = UserInfo.query.get(user_id)
+                    login_user = LoginUser.query.filter_by(user_id=user_id).first()
 
-                    if not user:
+                    if not login_user:
                         return {'code': HttpCode.db_error, 'msg': "User does not exist"}
                     else:
-                        if user.last_login == login_time:
+                        db_login_time = time.mktime(login_user.last_login.timetuple())
+                        if db_login_time == login_time:
                             return {'code': HttpCode.success, 'data': payload.get('data')}
-
-        return {'code': HttpCode.auth_error, 'msg': "authentication failed"}
+                return {'code': HttpCode.auth_error, 'msg': "Auth token decode error"}
+            return {'code': HttpCode.auth_error, 'msg': "Auto token expects starts with JWT"}
+        return {'code': HttpCode.auth_error, 'msg': "request headers has no 'Authorization' data"}
